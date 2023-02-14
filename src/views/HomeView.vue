@@ -8,11 +8,14 @@ export default {
       lat: 42.8667,
       lon: 88.3334,
       address: { city_name: 'New York', state_code: 'NY', country_code: 'US' },
+      map: null,
+      imageUrl: '',
     };
   },
   created: function () {
     this.getWeather();
     this.getGeocode();
+    this.getMap();
   },
   methods: {
     getGeocode: function () {
@@ -23,8 +26,14 @@ export default {
     getWeather: function () {
       console.log(process.env.VUE_APP_WEATHER_API);
       axios.get(`https://api.openweathermap.org/data/2.5/weather?q=peshawar&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
+        console.log(response);
         this.message = response.data;
-        console.log(response.data);
+      })
+    },
+    getMap: function () {
+      axios.get(`https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
+        this.imageUrl = URL.createObjectURL(new Blob([response.data]));
+        console.log(this.imageUrl);
       })
     }
   },
@@ -34,6 +43,9 @@ export default {
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
+    <div class="map">
+      <img :src="this.imageUrl">
+    </div>
   </div>
 </template>
 
