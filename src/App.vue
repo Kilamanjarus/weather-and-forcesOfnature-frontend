@@ -3,8 +3,14 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
-  <router-view/>
+  <router-view />
 </template>
+
+<!-- <head> Attempted to use Open Weather Map API, FAILURE
+	<script type="text/javascript" src="leaflet.js"></script>
+	<link rel="stylesheet" type="text/css" href="leaflet-openweathermap.css" />
+	<script type="text/javascript" src="leaflet-openweathermap.js"></script>
+</head> -->
 
 <style>
 #app {

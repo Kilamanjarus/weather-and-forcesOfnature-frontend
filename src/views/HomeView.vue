@@ -5,52 +5,49 @@ export default {
   data: function () {
     return {
       message: "Welcome to Vue.js!",
-      lat: 42.8667,
-      lon: 88.3334,
+      lat: 43,
+      lon: -75,
       address: { city_name: 'New York', state_code: 'NY', country_code: 'US' },
       map: null,
       imageUrl: '',
+      daily: [],
+      hourly: [],
+      minutely: [],
+      current: [],
     };
   },
-  mounted: function () {
-    const layer = 'temp_new';
-    const zoom = 5;
-    const x = 4;
-    const y = 4;
-    const url = `https://tile.openweathermap.org/map/${layer}/${zoom}/${x}/${y}?appid=${process.env.VUE_APP_WEATHER_API}`;
-    axios.get(url, { responseType: 'blob' })
-      .then(response => {
-        this.mapTileUrl = URL.createObjectURL(response.data);
-        console.log(this.mapTileUrl);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  },
   created: function () {
-    this.getWeather();
+    // this.getWeather();
     this.getGeocode();
-    // this.getMap();
+  },
+  mounted: function () {
+    this.getWeatherIcon();
   },
   methods: {
     getGeocode: function () {
       axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${this.address.city_name},${this.address.state_code},${this.address.country_code}&limit=3&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
-        console.log(response.data);
+        // console.log(response.data);
       })
     },
-    getWeather: function () {
+    getWeather: async function () {
       console.log(process.env.VUE_APP_WEATHER_API);
-      axios.get(`https://api.openweathermap.org/data/2.5/weather?q=peshawar&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
-        console.log(response);
-        this.message = response.data;
+      axios.get(`https://api.openweathermap.org/data/3.0/onecall?lat=${this.lat}&lon=${this.lon}&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
+        // console.log(response.data);
+        this.daily = response.data.daily;
+        this.hourly = response.data.hourly;
+        this.minutely = response.data.minutely;
+        this.message = response.data.alerts;
+        this.current = response.data.current;
       })
     },
-    // getMap: function () {
-    //   axios.get(`https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
-    //     this.imageUrl = URL.createObjectURL(new Blob([response.data]));
-    //     console.log(this.imageUrl);
-    //   })
-    // }
+    getWeatherIcon: async function () {
+      const icon = await this.getWeather().weather[0].icon;
+      console.log(this.current.weather);
+      axios.get(`http://openweathermap.org/img/wn/${this.current}@2x.png`).then(response => {
+        console.log(response.data);
+      }
+      )
+    },
   },
 };
 </script>
@@ -58,9 +55,8 @@ export default {
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
-  </div>
-  <div>
-    <img :src="mapTileUrl" alt="Map tile">
+    <h1>{{ this.current }}</h1>
+
   </div>
 </template>
 
