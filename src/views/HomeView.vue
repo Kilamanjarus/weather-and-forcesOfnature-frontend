@@ -14,6 +14,7 @@ export default {
       hourly: [],
       minutely: [],
       current: [],
+      icon: "",
     };
   },
   created: function () {
@@ -41,9 +42,9 @@ export default {
       })
     },
     getWeatherIcon: async function () {
-      const icon = await this.getWeather().weather[0].icon;
-      console.log(this.current.weather);
-      axios.get(`http://openweathermap.org/img/wn/${this.current}@2x.png`).then(response => {
+      this.icon = await this.getWeather().weather;
+      console.log(this.icon);
+      axios.get(`http://openweathermap.org/img/wn/${this.icon}@2x.png`).then(response => {
         console.log(response.data);
       }
       )
