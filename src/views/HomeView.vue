@@ -18,11 +18,8 @@ export default {
     };
   },
   created: function () {
-    // this.getWeather();
+    this.getWeather();
     this.getGeocode();
-  },
-  mounted: function () {
-    this.getWeatherIcon();
   },
   methods: {
     getGeocode: function () {
@@ -39,15 +36,12 @@ export default {
         this.minutely = response.data.minutely;
         this.message = response.data.alerts;
         this.current = response.data.current;
+        this.icon = `http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`;
+        axios.get(`http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`).then(response => {
+          console.log(response.data);
+
+        })
       })
-    },
-    getWeatherIcon: async function () {
-      this.icon = await this.getWeather().weather;
-      console.log(this.icon);
-      axios.get(`http://openweathermap.org/img/wn/${this.icon}@2x.png`).then(response => {
-        console.log(response.data);
-      }
-      )
     },
   },
 };
@@ -57,7 +51,9 @@ export default {
   <div class="home">
     <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1>
-
+    <div id="icon">
+      <img v-bind:src="this.icon">
+    </div>
   </div>
 </template>
 
