@@ -15,6 +15,7 @@ export default {
       minutely: [],
       current: [],
       icon: "",
+      temperatures: {}
     };
   },
   created: function () {
@@ -28,7 +29,6 @@ export default {
       })
     },
     getWeather: async function () {
-      console.log(process.env.VUE_APP_WEATHER_API);
       axios.get(`https://api.openweathermap.org/data/3.0/onecall?lat=${this.lat}&lon=${this.lon}&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
         // console.log(response.data);
         this.daily = response.data.daily;
@@ -37,10 +37,10 @@ export default {
         this.message = response.data.alerts;
         this.current = response.data.current;
         this.icon = `http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`;
-        axios.get(`http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`).then(response => {
-          console.log(response.data);
-
-        })
+        this.temperatures.kelvin = response.data.current.temp;
+        this.temperatures.fahrenheit = (response.data.current.temp - 273.15) * 9 / 5 + 32;
+        this.temperatures.celsius = response.data.current.temp - 273.15;
+        console.log(this.temperatures);
       })
     },
   },
@@ -49,8 +49,9 @@ export default {
 
 <template>
   <div class="home">
-    <h1>{{ message }}</h1>
-    <h1>{{ this.current }}</h1>
+    <!-- <h1>{{ message }}</h1>
+    <h1>{{ this.current }}</h1> -->
+    <h1>{{ this.current.weather[0].description.toUpperCase() }}</h1>
     <div id="icon">
       <img v-bind:src="this.icon">
     </div>
