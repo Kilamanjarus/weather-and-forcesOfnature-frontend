@@ -8,6 +8,7 @@ export default {
       lat: 43,
       lon: -75,
       address: {},
+      response_address: "",
       map: null,
       imageUrl: '',
       daily: [],
@@ -27,7 +28,7 @@ export default {
         console.log(response.data);
         this.lat = response.data[0].lat;
         this.lon = response.data[0].lon;
-        console.log(response.data[0].lat)
+        this.response_address = response.data[0].name + ", " + response.data[0].state;
         this.getWeather(response.data[0].lat, response.data[0].lon);
       })
     },
@@ -44,7 +45,7 @@ export default {
         this.temperatures.kelvin = Math.round(response.data.current.temp) + "\u00B0 K";
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
-        console.log(this.temperatures);
+        // console.log(this.current);
       })
     },
     getMap: function () {
@@ -69,6 +70,7 @@ export default {
   <div class="home">
     <input type="text" v-model="address.city_name" v-on:keyup.enter="getGeocode">
     <button @click="getGeocode">Get Weather</button>
+    <h1>{{ this.response_address }}</h1>
     <h1>{{ this.temperatures.fahrenheit }}</h1>
     <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
