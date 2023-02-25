@@ -21,6 +21,7 @@ export default {
   created: function () {
     this.getWeather();
     this.getGeocode();
+    this.getMap();
   },
   methods: {
     getGeocode: function () {
@@ -43,6 +44,12 @@ export default {
         console.log(this.temperatures);
       })
     },
+    getMap: function () {
+      axios.get(`https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
+        this.imageUrl = `https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`;
+        console.log(this.imageUrl);
+      })
+    },
   },
 };
 </script>
@@ -54,6 +61,9 @@ export default {
     <h1>{{ this.current.weather[0].description.toUpperCase() }}</h1>
     <div id="icon">
       <img v-bind:src="this.icon">
+    </div>
+    <div id="temp_map">
+      <img :src="this.imageUrl" alt="Map tile">
     </div>
   </div>
 </template>
