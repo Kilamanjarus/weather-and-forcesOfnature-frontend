@@ -41,7 +41,7 @@ export default {
         this.current = response.data.current;
         this.current_description = this.toTitleCase(response.data.current.weather[0].description);
         this.icon = `http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`;
-        this.temperatures.kelvin = Math.round(response.data.current.temp) + "K";
+        this.temperatures.kelvin = Math.round(response.data.current.temp) + "\u00B0 K";
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         console.log(this.temperatures);
@@ -53,13 +53,22 @@ export default {
         console.log(this.imageUrl);
       })
     },
-
+    toTitleCase: function (str) {
+      return str.replace(
+        /\w*/g,
+        function (txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+      );
+    },
   },
 };
 </script>
 
 <template>
   <div class="home">
+    <input type="text" v-model="address.city_name" v-on:keyup.enter="getGeocode">
+    <button @click="getGeocode">Get Weather</button>
     <h1>{{ this.temperatures.fahrenheit }}</h1>
     <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
