@@ -29,14 +29,12 @@ export default {
       axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${this.address.city_name}&limit=3&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
         console.log(response.data);
         this.geocode_responses = response.data;
-        this.lat = response.data[0].lat;
-        this.lon = response.data[0].lon;
-        this.response_address = response.data[0].name + ", " + response.data[0].state;
-        this.getWeather(response.data[0].lat, response.data[0].lon);
+
+        this.getWeather(response.data[0].lat, response.data[0].lon, response.data[0].name, response.data[0].state);
         console.log(this.geocode_responses);
       })
     },
-    getWeather: function (lat, lon) {
+    getWeather: function (lat, lon, name, state) {
       axios.get(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
         // console.log(response.data);
         this.daily = response.data.daily;
@@ -45,12 +43,13 @@ export default {
         this.message = response.data.alerts;
         this.current = response.data.current;
         this.current_description = this.toTitleCase(response.data.current.weather[0].description);
+        this.response_address = name + ", " + state;
         this.icon = `http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`;
         this.temperatures.kelvin = Math.round(response.data.current.temp) + "\u00B0 K";
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         this.show_response = true;
-        // console.log(this.current);
+        console.log(response.data);
       })
     },
     getMap: function () {
@@ -78,7 +77,10 @@ export default {
     <div></div>
     <div v-if="this.show_response">Choose Your Response</div>
     <span class="response_choice" v-for="response in this.geocode_responses">
-      <button>Click me!</button>
+      <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)">{{ response.name }},
+        {{
+          response.state
+        }}</button>&nbsp;
     </span>
     <h1>{{ this.response_address }}</h1>
     <h1>{{ this.temperatures.fahrenheit }}</h1>
