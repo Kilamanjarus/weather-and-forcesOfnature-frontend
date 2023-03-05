@@ -8,6 +8,7 @@ export default {
       lat: 43,
       lon: -75,
       address: {},
+      geocode_responses: {},
       response_address: "",
       map: null,
       imageUrl: '',
@@ -17,7 +18,8 @@ export default {
       current: [],
       icon: "",
       current_description: "",
-      temperatures: {}
+      temperatures: {},
+      show_response: false,
     };
   },
   created: function () {
@@ -26,10 +28,12 @@ export default {
     getGeocode: function () {
       axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${this.address.city_name}&limit=3&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
         console.log(response.data);
+        this.geocode_responses = response.data;
         this.lat = response.data[0].lat;
         this.lon = response.data[0].lon;
         this.response_address = response.data[0].name + ", " + response.data[0].state;
         this.getWeather(response.data[0].lat, response.data[0].lon);
+        console.log(this.geocode_responses);
       })
     },
     getWeather: function (lat, lon) {
@@ -45,6 +49,7 @@ export default {
         this.temperatures.kelvin = Math.round(response.data.current.temp) + "\u00B0 K";
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
+        this.show_response = true;
         // console.log(this.current);
       })
     },
@@ -70,6 +75,11 @@ export default {
   <div class="home">
     <input type="text" v-model="address.city_name" v-on:keyup.enter="getGeocode">
     <button @click="getGeocode">Get Weather</button>
+    <div></div>
+    <div v-if="this.show_response">Choose Your Response</div>
+    <span class="response_choice" v-for="response in this.geocode_responses">
+      <button>Click me!</button>
+    </span>
     <h1>{{ this.response_address }}</h1>
     <h1>{{ this.temperatures.fahrenheit }}</h1>
     <!-- <h1>{{ message }}</h1>
