@@ -20,6 +20,7 @@ export default {
       current_description: "",
       temperatures: {},
       show_response: false,
+      state_check: "",
     };
   },
   created: function () {
@@ -44,6 +45,7 @@ export default {
         this.current = response.data.current;
         this.current_description = this.toTitleCase(response.data.current.weather[0].description);
         this.response_address = name + ", " + state;
+        this.state_check = state
         this.icon = `http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`;
         this.temperatures.kelvin = Math.round(response.data.current.temp) + "\u00B0 K";
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
@@ -77,10 +79,12 @@ export default {
     <div></div>
     <div v-if="this.show_response">Choose Your Response</div>
     <span class="response_choice" v-for="response in this.geocode_responses">
-      <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)">{{ response.name }},
+      <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
+        v-if="response.state != this.state_check">{{ response.name }},
         {{
           response.state
-        }}</button>&nbsp;
+        }}
+      </button>&nbsp;
     </span>
     <h1>{{ this.response_address }}</h1>
     <h1>{{ this.temperatures.fahrenheit }}</h1>
