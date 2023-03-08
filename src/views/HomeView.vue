@@ -22,11 +22,10 @@ export default {
       show_response: false,
       state_check: "",
       currentTime: null,
-
-      forecast_temp: "",
-      forecast_wind_speed: "",
-      forecast_weather: "",
-      forecast_icon: "",
+      now: null,
+      hours: "",
+      minutes: "",
+      seconds: "",
     }
   },
   created: function () {
@@ -60,30 +59,30 @@ export default {
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         this.show_response = true;
-        console.log(this.time);
+        console.log(this.hourly);
       })
     },
     updateTime() {
-      const now = new Date()
-      const hours = now.getHours()
-      const minutes = now.getMinutes()
-      const seconds = now.getSeconds()
-      this.currentTime = `${hours}:${minutes}:${seconds}`
-    }
-  },
-  getMap: function () {
-    axios.get(`https://tile.openweathermap.org/map/temp_new/3/1/1?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
-      this.imageUrl = `https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`;
-      console.log(this.imageUrl);
-    })
-  },
-  toTitleCase: function (str) {
-    return str.replace(
-      /\w*/g,
-      function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      }
-    );
+      this.now = new Date()
+      this.hours = this.now.getHours()
+      this.minutes = this.now.getMinutes()
+      this.seconds = this.now.getSeconds()
+      this.currentTime = `${this.hours}:${this.minutes}:${this.seconds}`
+    },
+    getMap: function () {
+      axios.get(`https://tile.openweathermap.org/map/temp_new/3/1/1?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
+        this.imageUrl = `https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`;
+        console.log(this.imageUrl);
+      })
+    },
+    toTitleCase: function (str) {
+      return str.replace(
+        /\w*/g,
+        function (txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+      );
+    },
   },
 };
 </script>
@@ -113,9 +112,89 @@ export default {
     <!-- <div id="temp_map">
       <img :src="this.imageUrl" alt="Map tile">
     </div> -->
+    <h1 v-if="this.hourly != ``">Forecast:</h1>
+    <div v-for="forcast, index in this.hourly" class="box">
+      <div class="box-header"><b>{{ this.hours + index - 12 }} PM </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+      <div class="box-temp"><b>{{
+        Math.round((forcast.temp - 273.15) * 9 / 5 + 32) +
+          "\u00B0 F"
+      }}</b></div>
+      <div>
+        {{ forcast.wind_speed }} MPH Wind
+      </div>
+      <div>
+        {{ forcast.humidity }} % Humidity
+      </div>
+    </div>
   </div>
 </template>
 
 <style>
+.box {
+  display: inline-block;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 150px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+}
 
+.box-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  background-color: #ddd;
+}
+
+.box-time {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.box-icon {
+  width: 30px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.box-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+}
+
+.box-content-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 30px;
+}
+
+.box-content-label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.box-content-value {
+  font-size: 14px;
+}
+
+.box-temp {
+  font-size: 22px;
+  font-weight: bold;
+}
 </style>
