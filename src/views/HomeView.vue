@@ -21,16 +21,25 @@ export default {
       temperatures: {},
       show_response: false,
       state_check: "",
-    };
+      currentTime: null,
+
+      forecast_temp: "",
+      forecast_wind_speed: "",
+      forecast_weather: "",
+      forecast_icon: "",
+    }
   },
   created: function () {
+  },
+  mounted() {
+    this.updateTime()
+    setInterval(() => this.updateTime(), 1000)
   },
   methods: {
     getGeocode: function () {
       axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${this.address.city_name}&limit=3&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
         console.log(response.data);
         this.geocode_responses = response.data;
-
         this.getWeather(response.data[0].lat, response.data[0].lon, response.data[0].name, response.data[0].state);
         console.log(this.geocode_responses);
       })
@@ -51,23 +60,30 @@ export default {
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         this.show_response = true;
-        console.log(response.data);
+        console.log(this.time);
       })
     },
-    getMap: function () {
-      axios.get(`https://tile.openweathermap.org/map/temp_new/3/1/1?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
-        this.imageUrl = `https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`;
-        console.log(this.imageUrl);
-      })
-    },
-    toTitleCase: function (str) {
-      return str.replace(
-        /\w*/g,
-        function (txt) {
-          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }
-      );
-    },
+    updateTime() {
+      const now = new Date()
+      const hours = now.getHours()
+      const minutes = now.getMinutes()
+      const seconds = now.getSeconds()
+      this.currentTime = `${hours}:${minutes}:${seconds}`
+    }
+  },
+  getMap: function () {
+    axios.get(`https://tile.openweathermap.org/map/temp_new/3/1/1?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
+      this.imageUrl = `https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`;
+      console.log(this.imageUrl);
+    })
+  },
+  toTitleCase: function (str) {
+    return str.replace(
+      /\w*/g,
+      function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
   },
 };
 </script>
@@ -93,6 +109,7 @@ export default {
     <h1></h1>
     <h1>{{ this.current_description }}</h1>
     <img v-bind:src="this.icon">
+    <div></div>
     <!-- <div id="temp_map">
       <img :src="this.imageUrl" alt="Map tile">
     </div> -->
