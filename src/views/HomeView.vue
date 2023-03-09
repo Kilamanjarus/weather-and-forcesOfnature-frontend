@@ -118,11 +118,12 @@ export default {
     <h1>{{ this.current_description }}</h1>
     <img v-bind:src="this.icon">
     <div></div>
-    <!-- <div id="temp_map">
-      <img :src="this.imageUrl" alt="Map tile">
-    </div> -->
     <h1 v-if="this.hourly != ``">Forecast:</h1>
+
+    <!-- Forecast boxes -->
     <div v-for="forcast, index in this.hourly" class="box">
+
+      <!-- Same Day AM -->
       <div class="box-header" v-if="this.hours + index < 12"><b>{{ this.currentDate }} {{
         this.hours + index
       }} AM
@@ -130,6 +131,7 @@ export default {
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- Same Day PM -->
       <div class="box-header" v-if="this.hours > 12 && this.hours + index < 24"><b>{{ this.currentDate }} {{
         this.hours +
           index - 12
@@ -138,11 +140,13 @@ export default {
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- Next Day Midnight -->
       <div class="box-header" v-if="this.hours + index == 24"><b>{{ this.date_1 }} 12 AM
         </b>
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- Next Day AM -->
       <div class="box-header" v-if="this.hours + index > 24 && this.hours + index < 36"><b>{{ this.date_1 }} {{
         this.hours + index -
           24
@@ -151,11 +155,13 @@ export default {
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- Next Day Noon -->
       <div class="box-header" v-if="this.hours + index == 36"><b>{{ this.date_1 }} 12 PM
         </b>
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- Next Day PM -->
       <div class="box-header" v-if="this.hours + index > 36 && this.hours + index < 48"><b>{{ this.date_1 }} {{
         this.hours +
           index - 36
@@ -164,11 +170,13 @@ export default {
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- 2 Day Midnight -->
       <div class="box-header" v-if="this.hours + index == 48"><b>{{ this.date_1 }} 12 AM
         </b>
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- 2 Day AM -->
       <div class="box-header" v-if="this.hours + index > 48 && this.hours + index < 60"><b>{{ this.date_2 }} {{
         this.hours + index -
           48
@@ -177,11 +185,13 @@ export default {
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- 2 Day Midnight -->
       <div class="box-header" v-if="this.hours + index == 60"><b>{{ this.date_2 }} 12 AM
         </b>
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- 2 Day PM -->
       <div class="box-header" v-if="this.hours + index > 60"><b>{{ this.date_1 }} {{
         this.hours +
           index - 60
@@ -190,6 +200,7 @@ export default {
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
 
+      <!-- Boxes for Windspeed/Humidity -->
       <div class="box-temp"><b>{{
         Math.round((forcast.temp - 273.15) * 9 / 5 + 32) +
           "\u00B0 F"
