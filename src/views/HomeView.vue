@@ -22,6 +22,9 @@ export default {
       show_response: false,
       state_check: "",
       currentTime: null,
+      currentDate: null,
+      date_1: null,
+      date_2: null,
       now: null,
       hours: "",
       minutes: "",
@@ -67,7 +70,12 @@ export default {
       this.hours = this.now.getHours()
       this.minutes = this.now.getMinutes()
       this.seconds = this.now.getSeconds()
-      this.currentTime = `${this.hours}:${this.minutes}:${this.seconds}`
+      this.currentTime = `${this.hours}:${this.minutes}`
+      this.currentDate = `${this.now.getMonth() + 1}/${this.now.getDate()}`
+      this.date_1 = `${this.now.getMonth() + 1}/${this.now.getDate() + 1}`
+      this.date_2 = `${this.now.getMonth() + 1}/${this.now.getDate() + 2}`
+      this.forecastDate = `${this.now.getMonth() + 1}/${this.now.getDate()}`
+      console.log(this.currentTime);
     },
     getMap: function () {
       axios.get(`https://tile.openweathermap.org/map/temp_new/3/1/1?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
@@ -90,6 +98,7 @@ export default {
 <template>
   <div class="home">
     <input type="text" v-model="address.city_name" v-on:keyup.enter="getGeocode">
+    <h1>{{ this.currentDate }} {{ this.currentTime }}</h1>
     <button @click="getGeocode">Get Weather</button>
     <div></div>
     <div v-if="this.show_response">Choose Your Response</div>
@@ -114,9 +123,73 @@ export default {
     </div> -->
     <h1 v-if="this.hourly != ``">Forecast:</h1>
     <div v-for="forcast, index in this.hourly" class="box">
-      <div class="box-header"><b>{{ this.hours + index - 12 }} PM </b>
+      <div class="box-header" v-if="this.hours + index < 12"><b>{{ this.currentDate }} {{
+        this.hours + index
+      }} AM
+        </b>
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
+
+      <div class="box-header" v-if="this.hours > 12 && this.hours + index < 24"><b>{{ this.currentDate }} {{
+        this.hours +
+          index - 12
+      }}PM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index == 24"><b>{{ this.date_1 }} 12 AM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index > 24 && this.hours + index < 36"><b>{{ this.date_1 }} {{
+        this.hours + index -
+          24
+      }} AM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index == 36"><b>{{ this.date_1 }} 12 PM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index > 36 && this.hours + index < 48"><b>{{ this.date_1 }} {{
+        this.hours +
+          index - 36
+      }}PM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index == 48"><b>{{ this.date_1 }} 12 AM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index > 48 && this.hours + index < 60"><b>{{ this.date_2 }} {{
+        this.hours + index -
+          48
+      }} AM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index == 60"><b>{{ this.date_2 }} 12 AM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <div class="box-header" v-if="this.hours + index > 60"><b>{{ this.date_1 }} {{
+        this.hours +
+          index - 60
+      }}PM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
       <div class="box-temp"><b>{{
         Math.round((forcast.temp - 273.15) * 9 / 5 + 32) +
           "\u00B0 F"
