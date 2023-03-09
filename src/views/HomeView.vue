@@ -5,8 +5,8 @@ export default {
   data: function () {
     return {
       message: "Welcome to Vue.js!",
-      lat: 43,
-      lon: -75,
+      lat: 0,
+      lon: 0,
       address: {},
       geocode_responses: {},
       response_address: "",
@@ -18,7 +18,7 @@ export default {
       current: [],
       icon: "",
       current_description: "",
-      temperatures: {},
+      temperatures: { fahrenheit: "", celsius: "", kelvin: "" },
       show_response: false,
       state_check: "",
       currentTime: null,
@@ -65,7 +65,7 @@ export default {
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         this.show_response = true;
-        // console.log(this.hourly);
+        console.log(this.current);
       })
     },
     updateTime() {
@@ -150,10 +150,14 @@ export default {
 
 <template>
   <div class="home">
-    <input type="text" v-model="address.city_name" v-on:keyup.enter="getGeocode">
-    <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }}{{ this.timeclock }}</h1>
+    <!-- City Name Search Input -->
+    <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode">
+    <!-- Button For Search -->
     <button @click="getGeocode">Get Weather</button>
+    <!-- Time Bar -->
+    <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
     <div></div>
+    <!-- Buttons to change Response States -->
     <div v-if="this.show_response">Choose Your Response</div>
     <span class="response_choice" v-for="response in this.geocode_responses">
       <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
@@ -164,7 +168,7 @@ export default {
       </button>&nbsp;
     </span>
     <h1>{{ this.response_address }}</h1>
-    <h1>{{ this.temperatures.fahrenheit }}</h1>
+    <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}</h1>
     <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
     <h1></h1>
