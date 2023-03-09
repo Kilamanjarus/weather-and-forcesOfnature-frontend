@@ -22,10 +22,13 @@ export default {
       show_response: false,
       state_check: "",
       currentTime: null,
+      timeclock: "",
       currentDate: null,
       date_1: null,
       date_2: null,
       now: null,
+      month: null,
+      day: null,
       hours: "",
       minutes: "",
       seconds: "",
@@ -40,10 +43,10 @@ export default {
   methods: {
     getGeocode: function () {
       axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${this.address.city_name}&limit=3&appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         this.geocode_responses = response.data;
         this.getWeather(response.data[0].lat, response.data[0].lon, response.data[0].name, response.data[0].state);
-        console.log(this.geocode_responses);
+        // console.log(this.geocode_responses);
       })
     },
     getWeather: function (lat, lon, name, state) {
@@ -62,25 +65,27 @@ export default {
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         this.show_response = true;
-        console.log(this.hourly);
+        // console.log(this.hourly);
       })
     },
     updateTime() {
       this.now = new Date()
+      this.month = this.dateToMonth(this.now.getMonth() + 1)
+      this.day = this.now.getDate()
       this.hours = this.now.getHours()
       this.minutes = this.now.getMinutes()
       this.seconds = this.now.getSeconds()
-      this.currentTime = `${this.hours}:${this.minutes}`
+      this.currentTime = `${this.setHoursToAmPm(this.hours)}:${this.minutes}`
       this.currentDate = `${this.now.getMonth() + 1}/${this.now.getDate()}`
       this.date_1 = `${this.now.getMonth() + 1}/${this.now.getDate() + 1}`
       this.date_2 = `${this.now.getMonth() + 1}/${this.now.getDate() + 2}`
       this.forecastDate = `${this.now.getMonth() + 1}/${this.now.getDate()}`
-      console.log(this.currentTime);
+      // console.log(this.currentTime);
     },
     getMap: function () {
       axios.get(`https://tile.openweathermap.org/map/temp_new/3/1/1?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
         this.imageUrl = `https://tile.openweathermap.org/map/temp_new/5/4/4?appid=${process.env.VUE_APP_WEATHER_API}`;
-        console.log(this.imageUrl);
+        // console.log(this.imageUrl);
       })
     },
     toTitleCase: function (str) {
@@ -91,6 +96,54 @@ export default {
         }
       );
     },
+    dateToMonth: function (date) {
+      if (date = 1) {
+        return "January"
+      }
+      if (date = 2) {
+        return "February"
+      }
+      if (date = 3) {
+        return "March"
+      }
+      if (date = 4) {
+        return "April"
+      }
+      if (date = 5) {
+        return "May"
+      }
+      if (date = 6) {
+        return "June"
+      }
+      if (date = 7) {
+        return "July"
+      }
+      if (date = 8) {
+        return "August"
+      }
+      if (date = 9) {
+        return "September"
+      }
+      if (date = 10) {
+        return "October"
+      }
+      if (date = 11) {
+        return "November"
+      }
+      if (date = 12) {
+        return "December"
+      }
+    },
+    setHoursToAmPm: function (hours) {
+      if (hours >= 12) {
+        this.timeclock = "PM"
+        return hours - 12
+      }
+      else {
+        this.timeclock = "AM"
+        return hours
+      }
+    },
   },
 };
 </script>
@@ -98,7 +151,7 @@ export default {
 <template>
   <div class="home">
     <input type="text" v-model="address.city_name" v-on:keyup.enter="getGeocode">
-    <h1>{{ this.currentDate }} {{ this.currentTime }}</h1>
+    <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }}{{ this.timeclock }}</h1>
     <button @click="getGeocode">Get Weather</button>
     <div></div>
     <div v-if="this.show_response">Choose Your Response</div>
