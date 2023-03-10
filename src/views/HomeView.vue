@@ -68,7 +68,7 @@ export default {
         this.temperatures.low = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32);
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         this.show_response = true;
-        console.log(this.hourly);
+        // console.log(this.current);
         this.getHighLow()
       })
     },
@@ -189,10 +189,12 @@ export default {
     <h1>{{ this.response_address }}</h1>
     <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}
     </h1>
-    <h1 v-if="this.temperatures.fahrenheit != ``">Today's High: {{ this.temperatures.high + "\u00B0 F" }} / Today's Low:
+    <h1 v-if="this.temperatures.fahrenheit != ``">Today's Current High: {{ this.temperatures.high + "\u00B0 F" }} /
+      Today's Current Low:
       {{
         this.temperatures.low + "\u00B0 F"
       }}</h1>
+    <h1 h1 v-if="this.temperatures.fahrenheit != ``">Wind Speeds of {{ this.current.wind_speed }} MPH</h1>
     <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
     <h1></h1>
