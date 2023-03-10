@@ -18,9 +18,10 @@ export default {
       current: [],
       icon: "",
       current_description: "",
-      temperatures: { fahrenheit: "", celsius: "", kelvin: "" },
+      temperatures: { fahrenheit: "", celsius: "", kelvin: "", high: 0, low: 0 },
       show_response: false,
       state_check: "",
+
       currentTime: null,
       timeclock: "",
       currentDate: null,
@@ -63,9 +64,12 @@ export default {
         this.icon = `http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`;
         this.temperatures.kelvin = Math.round(response.data.current.temp) + "\u00B0 K";
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
+        this.temperatures.high = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32);
+        this.temperatures.low = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32);
         this.temperatures.celsius = Math.round(response.data.current.temp - 273.15) + "\u00B0 C";
         this.show_response = true;
-        console.log(this.current);
+        console.log(this.hourly);
+        this.getHighLow()
       })
     },
     updateTime() {
@@ -144,6 +148,21 @@ export default {
         return hours
       }
     },
+    getHighLow: function () {
+      console.log("Running getHighLow");
+      this.hourly.forEach((element, index) => {
+        if (this.hours + index < 24) {
+          if (Math.round((element.temp - 273.15) * 9 / 5 + 32) > this.temperatures.high) {
+            this.temperatures.high = Math.round((element.temp - 273.15) * 9 / 5 + 32)
+            console.log(this.temperatures.high);
+          }
+          if (Math.round((element.temp - 273.15) * 9 / 5 + 32) < this.temperatures.low) {
+            this.temperatures.low = Math.round((element.temp - 273.15) * 9 / 5 + 32)
+            console.log(this.temperatures.high);
+          }
+        }
+      })
+    },
   },
 };
 </script>
@@ -168,7 +187,12 @@ export default {
       </button>&nbsp;
     </span>
     <h1>{{ this.response_address }}</h1>
-    <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}</h1>
+    <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}
+    </h1>
+    <h1 v-if="this.temperatures.fahrenheit != ``">Today's High: {{ this.temperatures.high + "\u00B0 F" }} / Today's Low:
+      {{
+        this.temperatures.low + "\u00B0 F"
+      }}</h1>
     <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
     <h1></h1>
