@@ -195,6 +195,7 @@ export default {
         this.temperatures.low + "\u00B0 F"
       }}</h1>
     <h1 h1 v-if="this.temperatures.fahrenheit != ``">Wind Speeds of {{ this.current.wind_speed }} MPH</h1>
+    <h1 h1 v-if="this.temperatures.fahrenheit != ``">Humidity of {{ this.current.humidity }}%</h1>
     <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
     <h1></h1>
