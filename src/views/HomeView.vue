@@ -204,6 +204,7 @@ export default {
         case '50n': //mist night
           break;
         case '09d': //shower rain day
+          this.backgroundImage = 'https://gray-ksla-prod.cdn.arcpublishing.com/resizer/HLiMBZHQq33LQDqoaInn7xFbv5M=/1200x675/smart/filters:quality(85)/cloudfront-us-east-1.images.arcpublishing.com/gray/JFDZ7U577FFBTCTSLUKDQDSAYQ.png';
           break;
         case '09n': //shower rain night
           break;
@@ -359,8 +360,8 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 200px;
-  height: 150px;
+  width: 15em;
+  height: 10em;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
 }
@@ -406,13 +407,13 @@ export default {
 }
 
 .box-content-label {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
   margin-right: 10px;
 }
 
 .box-content-value {
-  font-size: 14px;
+  font-size: 20px;
 }
 
 .box-temp {
