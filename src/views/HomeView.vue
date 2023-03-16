@@ -163,8 +163,48 @@ export default {
         }
       })
     },
+    setBackground() {
+      switch (this.forecast.weather[0].icon) {
+        case '01d': //clear sky day
+          break;
+        case '01n': //clear sky night
+          break;
+        case '02d': //few clouds day
+          break;
+        case '02n': //few clouds night
+          break;
+        case '03d': //scattered clouds day
+          break;
+        case '03n': //scattered clouds night
+          break;
+        case '04d': //broken clouds day
+          break;
+        case '04n': //broken clouds night
+          break;
+        case '10d': //rain day
+          break;
+        case '10n': //rain night
+          break;
+        case '11d': //thunderstorm day
+          break;
+        case '11n': //thunderstorm night
+          break;
+        case '13d': //snow day
+          break;
+        case '13n': //snow night
+          break;
+        case '50d': //mist day
+          break;
+        case '50n': //mist night
+          break;
+        case '09d': //shower rain day
+          break;
+        case '09n': //shower rain night
+          break;
+      }
+    },
   },
-};
+}
 </script>
 
 <template>
@@ -216,10 +256,16 @@ export default {
       </div>
 
       <!-- Same Day PM -->
-      <div class="box-header" v-if="this.hours > 12 && this.hours + index < 24"><b>{{ this.currentDate }} {{
+      <div class="box-header" v-if="this.hours + index > 12 && this.hours + index < 24"><b>{{ this.currentDate }} {{
         this.hours +
           index - 12
       }}PM
+        </b>
+        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+      </div>
+
+      <!-- Same Day Noon -->
+      <div class="box-header" v-if="this.hours + index == 12"><b>{{ this.currentDate }} 12 PM
         </b>
         <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
       </div>
