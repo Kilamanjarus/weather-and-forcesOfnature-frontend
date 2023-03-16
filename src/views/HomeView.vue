@@ -33,6 +33,8 @@ export default {
       hours: "",
       minutes: "",
       seconds: "",
+
+      backgroundImage: "",
     }
   },
   created: function () {
@@ -62,6 +64,7 @@ export default {
         this.response_address = name + ", " + state;
         this.state_check = state
         this.icon = `http://openweathermap.org/img/wn/${response.data.current.weather[0].icon}@2x.png`;
+        this.setBackground(response.data.current.weather[0].icon)
         this.temperatures.kelvin = Math.round(response.data.current.temp) + "\u00B0 K";
         this.temperatures.fahrenheit = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32) + "\u00B0 F";
         this.temperatures.high = Math.round((response.data.current.temp - 273.15) * 9 / 5 + 32);
@@ -163,8 +166,9 @@ export default {
         }
       })
     },
-    setBackground() {
-      switch (this.forecast.weather[0].icon) {
+    setBackground(icon) {
+      console.log(icon)
+      switch (icon) {
         case '01d': //clear sky day
           break;
         case '01n': //clear sky night
@@ -182,6 +186,8 @@ export default {
         case '04n': //broken clouds night
           break;
         case '10d': //rain day
+          console.log("rain day")
+          this.backgroundImage = 'https://images.pexels.com/photos/2259232/pexels-photo-2259232.jpeg';
           break;
         case '10n': //rain night
           break;
@@ -209,137 +215,139 @@ export default {
 
 <template>
   <div class="home">
-    <!-- City Name Search Input -->
-    <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode">
-    <!-- Button For Search -->
-    <button @click="getGeocode">Get Weather</button>
-    <!-- Time Bar -->
-    <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
-    <div></div>
-    <!-- Buttons to change Response States -->
-    <div v-if="this.show_response">Choose Your Response</div>
-    <span class="response_choice" v-for="response in this.geocode_responses">
-      <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
-        v-if="response.state != this.state_check">{{ response.name }},
+    <div :style="{ backgroundImage: `url(${backgroundImage})` }">
+      <!-- City Name Search Input -->
+      <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode">
+      <!-- Button For Search -->
+      <button @click="getGeocode">Get Weather</button>
+      <!-- Time Bar -->
+      <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
+      <div></div>
+      <!-- Buttons to change Response States -->
+      <div v-if="this.show_response">Choose Your Response</div>
+      <span class="response_choice" v-for="response in this.geocode_responses">
+        <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
+          v-if="response.state != this.state_check">{{ response.name }},
+          {{
+            response.state
+          }}
+        </button>&nbsp;
+      </span>
+      <h1>{{ this.response_address }}</h1>
+      <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}
+      </h1>
+      <h1 v-if="this.temperatures.fahrenheit != ``">Today's Current High: {{ this.temperatures.high + "\u00B0 F" }} /
+        Today's Current Low:
         {{
-          response.state
-        }}
-      </button>&nbsp;
-    </span>
-    <h1>{{ this.response_address }}</h1>
-    <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}
-    </h1>
-    <h1 v-if="this.temperatures.fahrenheit != ``">Today's Current High: {{ this.temperatures.high + "\u00B0 F" }} /
-      Today's Current Low:
-      {{
-        this.temperatures.low + "\u00B0 F"
-      }}</h1>
-    <h1 h1 v-if="this.temperatures.fahrenheit != ``">Wind Speeds of {{ this.current.wind_speed }} MPH</h1>
-    <h1 h1 v-if="this.temperatures.fahrenheit != ``">Humidity of {{ this.current.humidity }}%</h1>
-    <!-- <h1>{{ message }}</h1>
+          this.temperatures.low + "\u00B0 F"
+        }}</h1>
+      <h1 h1 v-if="this.temperatures.fahrenheit != ``">Wind Speeds of {{ this.current.wind_speed }} MPH</h1>
+      <h1 h1 v-if="this.temperatures.fahrenheit != ``">Humidity of {{ this.current.humidity }}%</h1>
+      <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
-    <h1></h1>
-    <h1>{{ this.current_description }}</h1>
-    <img v-bind:src="this.icon">
-    <div></div>
-    <h1 v-if="this.hourly != ``">Forecast:</h1>
+      <h1></h1>
+      <h1>{{ this.current_description }}</h1>
+      <img v-bind:src="this.icon">
+      <div></div>
+      <h1 v-if="this.hourly != ``">Forecast:</h1>
 
-    <!-- Forecast boxes -->
-    <div v-for="forcast, index in this.hourly" class="box">
+      <!-- Forecast boxes -->
+      <div v-for="forcast, index in this.hourly" class="box">
 
-      <!-- Same Day AM -->
-      <div class="box-header" v-if="this.hours + index < 12"><b>{{ this.currentDate }} {{
-        this.hours + index
-      }} AM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- Same Day AM -->
+        <div class="box-header" v-if="this.hours + index < 12"><b>{{ this.currentDate }} {{
+          this.hours + index
+        }} AM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- Same Day PM -->
-      <div class="box-header" v-if="this.hours + index > 12 && this.hours + index < 24"><b>{{ this.currentDate }} {{
-        this.hours +
-          index - 12
-      }}PM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- Same Day PM -->
+        <div class="box-header" v-if="this.hours + index > 12 && this.hours + index < 24"><b>{{ this.currentDate }} {{
+          this.hours +
+            index - 12
+        }}PM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- Same Day Noon -->
-      <div class="box-header" v-if="this.hours + index == 12"><b>{{ this.currentDate }} 12 PM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- Same Day Noon -->
+        <div class="box-header" v-if="this.hours + index == 12"><b>{{ this.currentDate }} 12 PM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- Next Day Midnight -->
-      <div class="box-header" v-if="this.hours + index == 24"><b>{{ this.date_1 }} 12 AM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- Next Day Midnight -->
+        <div class="box-header" v-if="this.hours + index == 24"><b>{{ this.date_1 }} 12 AM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- Next Day AM -->
-      <div class="box-header" v-if="this.hours + index > 24 && this.hours + index < 36"><b>{{ this.date_1 }} {{
-        this.hours + index -
-          24
-      }} AM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- Next Day AM -->
+        <div class="box-header" v-if="this.hours + index > 24 && this.hours + index < 36"><b>{{ this.date_1 }} {{
+          this.hours + index -
+            24
+        }} AM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- Next Day Noon -->
-      <div class="box-header" v-if="this.hours + index == 36"><b>{{ this.date_1 }} 12 PM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- Next Day Noon -->
+        <div class="box-header" v-if="this.hours + index == 36"><b>{{ this.date_1 }} 12 PM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- Next Day PM -->
-      <div class="box-header" v-if="this.hours + index > 36 && this.hours + index < 48"><b>{{ this.date_1 }} {{
-        this.hours +
-          index - 36
-      }}PM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- Next Day PM -->
+        <div class="box-header" v-if="this.hours + index > 36 && this.hours + index < 48"><b>{{ this.date_1 }} {{
+          this.hours +
+            index - 36
+        }}PM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- 2 Day Midnight -->
-      <div class="box-header" v-if="this.hours + index == 48"><b>{{ this.date_1 }} 12 AM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- 2 Day Midnight -->
+        <div class="box-header" v-if="this.hours + index == 48"><b>{{ this.date_1 }} 12 AM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- 2 Day AM -->
-      <div class="box-header" v-if="this.hours + index > 48 && this.hours + index < 60"><b>{{ this.date_2 }} {{
-        this.hours + index -
-          48
-      }} AM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- 2 Day AM -->
+        <div class="box-header" v-if="this.hours + index > 48 && this.hours + index < 60"><b>{{ this.date_2 }} {{
+          this.hours + index -
+            48
+        }} AM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- 2 Day Midnight -->
-      <div class="box-header" v-if="this.hours + index == 60"><b>{{ this.date_2 }} 12 AM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- 2 Day Midnight -->
+        <div class="box-header" v-if="this.hours + index == 60"><b>{{ this.date_2 }} 12 AM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- 2 Day PM -->
-      <div class="box-header" v-if="this.hours + index > 60"><b>{{ this.date_1 }} {{
-        this.hours +
-          index - 60
-      }}PM
-        </b>
-        <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
-      </div>
+        <!-- 2 Day PM -->
+        <div class="box-header" v-if="this.hours + index > 60"><b>{{ this.date_1 }} {{
+          this.hours +
+            index - 60
+        }}PM
+          </b>
+          <img v-bind:src="`http://openweathermap.org/img/wn/${forcast.weather[0].icon}@2x.png`">
+        </div>
 
-      <!-- Boxes for Windspeed/Humidity -->
-      <div class="box-temp"><b>{{
-        Math.round((forcast.temp - 273.15) * 9 / 5 + 32) +
-          "\u00B0 F"
-      }}</b></div>
-      <div>
-        {{ forcast.wind_speed }} MPH Wind
-      </div>
-      <div>
-        {{ forcast.humidity }} % Humidity
+        <!-- Boxes for Windspeed/Humidity -->
+        <div class="box-temp"><b>{{
+          Math.round((forcast.temp - 273.15) * 9 / 5 + 32) +
+            "\u00B0 F"
+        }}</b></div>
+        <div>
+          {{ forcast.wind_speed }} MPH Wind
+        </div>
+        <div>
+          {{ forcast.humidity }} % Humidity
+        </div>
       </div>
     </div>
   </div>
