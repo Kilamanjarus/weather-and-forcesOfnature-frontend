@@ -170,14 +170,19 @@ export default {
       console.log(icon)
       switch (icon) {
         case '01d': //clear sky day
+          this.backgroundImage = 'https://w0.peakpx.com/wallpaper/252/407/HD-wallpaper-a-clear-day-at-beach-rocks-sun-sunlights-background-clouds-cenario-sundown-nice-multicolor-scenario-bright-waterscape-brightness-cena-oceanscape-sky-trees-panorama-sunrays-cool.jpg'
           break;
         case '01n': //clear sky night
+          this.backgroundImage = 'https://media.istockphoto.com/id/475374757/photo/star-in-blue-sky-night-time-scene.jpg?s=612x612&w=0&k=20&c=eFrDRX7X3tuV7QzRGLBEYrmaElMRn2PdAxasP64hDds='
           break;
         case '02d': //few clouds day
+          this.backgroundImage = 'https://media.istockphoto.com/id/499680089/photo/light-blue-sky.jpg?s=612x612&w=0&k=20&c=Sxj_elMitmPyqcX0z1x7vJdVyT_HZhmYdqLf63uEcgA='
           break;
         case '02n': //few clouds night
+          this.backgroundImage = 'https://rare-gallery.com/thumbs/879731-Sky-Mountains-Forests-Night-Moon-Clouds.jpg'
           break;
         case '03d': //scattered clouds day
+          this.backgroundImage = 'https://i.pinimg.com/originals/e9/48/9c/e9489cabae5ef3546f3e3f80e79f72f2.jpg'
           break;
         case '03n': //scattered clouds night
           break;
@@ -216,13 +221,14 @@ export default {
 
 <template>
   <div class="home">
-    <div :style="{ backgroundImage: `url(${backgroundImage})` }">
+    <div :style="{ backgroundImage: `url(${backgroundImage})` }" class="my-background">
+      <!-- Time Bar -->
+      <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
+      <div></div>
       <!-- City Name Search Input -->
       <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode">
       <!-- Button For Search -->
       <button @click="getGeocode">Get Weather</button>
-      <!-- Time Bar -->
-      <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
       <div></div>
       <!-- Buttons to change Response States -->
       <div v-if="this.show_response">Choose Your Response</div>
@@ -419,5 +425,12 @@ export default {
 .box-temp {
   font-size: 22px;
   font-weight: bold;
+}
+
+.my-background {
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 1em;
+  border-color: black;
 }
 </style>
