@@ -179,19 +179,21 @@ export default {
           this.backgroundImage = 'https://media.istockphoto.com/id/499680089/photo/light-blue-sky.jpg?s=612x612&w=0&k=20&c=Sxj_elMitmPyqcX0z1x7vJdVyT_HZhmYdqLf63uEcgA='
           break;
         case '02n': //few clouds night
-          this.backgroundImage = 'https://rare-gallery.com/thumbs/879731-Sky-Mountains-Forests-Night-Moon-Clouds.jpg'
+          this.backgroundImage = `https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/fc470c8c-2e66-48d5-af87-a0a6818fc06d/dext91s-a57bd8b0-646b-46a0-9315-0bcc45921975.png/v1/fill/w_1057,h_756,q_70,strp/itchi_by_raikonkitsune_dext91s-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTE2IiwicGF0aCI6IlwvZlwvZmM0NzBjOGMtMmU2Ni00OGQ1LWFmODctYTBhNjgxOGZjMDZkXC9kZXh0OTFzLWE1N2JkOGIwLTY0NmItNDZhMC05MzE1LTBiY2M0NTkyMTk3NS5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.XTqFWHMwmYtKD1GffwbuLkgxYUo1sXI0bCfoLEt5eHM`
           break;
         case '03d': //scattered clouds day
-          this.backgroundImage = 'https://i.pinimg.com/originals/e9/48/9c/e9489cabae5ef3546f3e3f80e79f72f2.jpg'
+          this.backgroundImage = 'https://media.istockphoto.com/id/171225633/photo/deep-blue-view-on-a-lightly-clouded-day.jpg?s=612x612&w=0&k=20&c=KGV9ieDdP5wgx9unc_HwHmP5wuRmpgyDSA0h-3_gNNo='
           break;
         case '03n': //scattered clouds night
+          this.backgroundImage = 'https://rare-gallery.com/thumbs/879731-Sky-Mountains-Forests-Night-Moon-Clouds.jpg'
           break;
         case '04d': //broken clouds day
+          this.backgroundImage = `https://pm1.narvii.com/6922/075acd11e139fac05e46c33361a879403a8b6ccer1-2048-1152v2_hq.jpg`
           break;
         case '04n': //broken clouds night
+          this.backgroundImage = 'https://media.istockphoto.com/id/1154430991/photo/dark-blue-storm-cloudy-sky-background.jpg?b=1&s=170667a&w=0&k=20&c=nyurCBs4SGGjny4MRhJdb4aQXc9MS1pj5VCw1XV4uKA='
           break;
         case '10d': //rain day
-          console.log("rain day")
           this.backgroundImage = 'https://images.pexels.com/photos/2259232/pexels-photo-2259232.jpeg';
           break;
         case '10n': //rain night
