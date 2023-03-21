@@ -229,14 +229,16 @@ export default {
         <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
         <div></div>
         <!-- City Name Search Input -->
-        <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode">
+        <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode"
+          class="text-in-response">
         <!-- Button For Search -->
-        <button @click="getGeocode">Get Weather</button>
+        <button @click="getGeocode" class="text-in-response">Get Weather</button>
         <br>
         <!-- Buttons to change Response States -->
-        <p v-if="this.show_response"><b>Choose Your Response </b></p>
+        <p v-if="this.show_response" class="text-in-response"><b>Choose Your Response </b></p>
         <span class="response_choice" v-for="response in this.geocode_responses">
-          <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
+          <button class="text-in-response"
+            @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
             v-if="response.state != this.state_check">{{ response.name }},
             {{
               response.state
@@ -436,6 +438,14 @@ export default {
   background-size: cover;
   border-radius: 1em;
   border-color: black;
+}
+
+.text-in-response {
+  font-size: 22px;
+}
+
+.response-choice {
+  font-size: 22px;
 }
 
 .text-response {
