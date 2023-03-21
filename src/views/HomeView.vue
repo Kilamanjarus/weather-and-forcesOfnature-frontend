@@ -87,7 +87,7 @@ export default {
       this.date_1 = `${this.now.getMonth() + 1}/${this.now.getDate() + 1}`
       this.date_2 = `${this.now.getMonth() + 1}/${this.now.getDate() + 2}`
       this.forecastDate = `${this.now.getMonth() + 1}/${this.now.getDate()}`
-      // console.log(this.currentTime);
+      console.log(this.dateToMonth(this.now.getMonth() + 1));
     },
     getMap: function () {
       axios.get(`https://tile.openweathermap.org/map/temp_new/3/1/1?appid=${process.env.VUE_APP_WEATHER_API}`).then(response => {
@@ -104,40 +104,40 @@ export default {
       );
     },
     dateToMonth: function (date) {
-      if (date = 1) {
+      if (date == 1) {
         return "January"
       }
-      if (date = 2) {
+      if (date == 2) {
         return "February"
       }
-      if (date = 3) {
+      if (date == 3) {
         return "March"
       }
-      if (date = 4) {
+      if (date == 4) {
         return "April"
       }
-      if (date = 5) {
+      if (date == 5) {
         return "May"
       }
-      if (date = 6) {
+      if (date == 6) {
         return "June"
       }
-      if (date = 7) {
+      if (date == 7) {
         return "July"
       }
-      if (date = 8) {
+      if (date == 8) {
         return "August"
       }
-      if (date = 9) {
+      if (date == 9) {
         return "September"
       }
-      if (date = 10) {
+      if (date == 10) {
         return "October"
       }
-      if (date = 11) {
+      if (date == 11) {
         return "November"
       }
-      if (date = 12) {
+      if (date == 12) {
         return "December"
       }
     },
@@ -222,44 +222,46 @@ export default {
 </script>
 
 <template>
-  <div class="home">
-    <div :style="{ backgroundImage: `url(${backgroundImage})` }" class="my-background">
+  <div :style="{ backgroundImage: `url(${backgroundImage})` }" class="my-background">
+    <div>
       <!-- Time Bar -->
-      <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
-      <div></div>
-      <!-- City Name Search Input -->
-      <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode">
-      <!-- Button For Search -->
-      <button @click="getGeocode">Get Weather</button>
-      <div></div>
-      <!-- Buttons to change Response States -->
-      <div v-if="this.show_response">Choose Your Response</div>
-      <span class="response_choice" v-for="response in this.geocode_responses">
-        <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
-          v-if="response.state != this.state_check">{{ response.name }},
+      <div class="text-response">
+        <h1>{{ this.month }} {{ this.day }} {{ this.currentTime }} {{ this.timeclock }}</h1>
+        <div></div>
+        <!-- City Name Search Input -->
+        <input type="text" v-model="address.city_name" placeholder="City Name..." v-on:keyup.enter="getGeocode">
+        <!-- Button For Search -->
+        <button @click="getGeocode">Get Weather</button>
+        <br>
+        <!-- Buttons to change Response States -->
+        <p v-if="this.show_response"><b>Choose Your Response </b></p>
+        <span class="response_choice" v-for="response in this.geocode_responses">
+          <button @click="this.getWeather(response.lat, response.lon, response.name, response.state)"
+            v-if="response.state != this.state_check">{{ response.name }},
+            {{
+              response.state
+            }}
+          </button>&nbsp;
+        </span>
+        <!-- Current City Response -->
+        <h1>{{ this.response_address }}</h1>
+        <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}
+        </h1>
+        <h1 v-if="this.temperatures.fahrenheit != ``">Today's Current High: {{ this.temperatures.high + "\u00B0 F" }} /
+          Today's Current Low:
           {{
-            response.state
-          }}
-        </button>&nbsp;
-      </span>
-      <h1>{{ this.response_address }}</h1>
-      <h1 v-if="this.temperatures.fahrenheit != ``">Current Temperature: {{ this.temperatures.fahrenheit }}
-      </h1>
-      <h1 v-if="this.temperatures.fahrenheit != ``">Today's Current High: {{ this.temperatures.high + "\u00B0 F" }} /
-        Today's Current Low:
-        {{
-          this.temperatures.low + "\u00B0 F"
-        }}</h1>
-      <h1 h1 v-if="this.temperatures.fahrenheit != ``">Wind Speeds of {{ this.current.wind_speed }} MPH</h1>
-      <h1 h1 v-if="this.temperatures.fahrenheit != ``">Humidity of {{ this.current.humidity }}%</h1>
-      <!-- <h1>{{ message }}</h1>
+            this.temperatures.low + "\u00B0 F"
+          }}</h1>
+        <h1 h1 v-if="this.temperatures.fahrenheit != ``">Wind Speeds of {{ this.current.wind_speed }} MPH</h1>
+        <h1 h1 v-if="this.temperatures.fahrenheit != ``">Humidity of {{ this.current.humidity }}%</h1>
+        <!-- <h1>{{ message }}</h1>
     <h1>{{ this.current }}</h1> -->
-      <h1></h1>
-      <h1>{{ this.current_description }}</h1>
-      <img v-bind:src="this.icon">
-      <div></div>
-      <h1 v-if="this.hourly != ``">Forecast:</h1>
-
+        <h1></h1>
+        <h1>{{ this.current_description }}</h1>
+        <img v-bind:src="this.icon">
+        <div></div>
+        <h1 v-if="this.hourly != ``">Forecast:</h1>
+      </div>
       <!-- Forecast boxes -->
       <div v-for="forcast, index in this.hourly" class="box">
 
@@ -433,6 +435,15 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 1em;
+  border-color: black;
+}
+
+.text-response {
+  background-color: rgba(255, 255, 255, 0.3);
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  border-radius: 100px;
   border-color: black;
 }
 </style>
